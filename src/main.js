@@ -308,12 +308,12 @@ function distance(a, b) {
                         0,
                         300
                     );
-                // morph =
-                //     THREE.MathUtils.clamp(
-                //         openness * 2,
-                //         0,
-                //         1
-                //     );
+                morph =
+                    THREE.MathUtils.clamp(
+                        openness * 2,
+                        0,
+                        1
+                    );
 
                 targetX =
                     (0.5 - lm[0].x) * 120;
