@@ -236,7 +236,7 @@ let scatter = 0;
 let targetX = 0;
 let targetY = 0;
 let targetScale = 1;
-let morph = 0;
+let morph = 1;
 
 function distance(a, b) {
     return Math.hypot(
@@ -308,12 +308,12 @@ function distance(a, b) {
                         0,
                         300
                     );
-                morph =
-                    THREE.MathUtils.clamp(
-                        openness * 2,
-                        0,
-                        1
-                    );
+                // morph =
+                //     THREE.MathUtils.clamp(
+                //         openness * 2,
+                //         0,
+                //         1
+                //     );
 
                 targetX =
                     (0.5 - lm[0].x) * 120;
