@@ -112,13 +112,44 @@ scene.add(stars);
 
 async function loadPhotoTargets() {
 
-    const img = new Image();
+    onst img = new Image();
 
-    img.src = '/photo.jpg';
+const photos = [
+    '/1.jpg',
+    '/2.jpg',
+    '/3.jpg',
+    '/4.png',
+    '/5.jpg',
+    '/6.jpg',
+    '/7.jpg'
+];
 
-    await new Promise(resolve => {
-        img.onload = resolve;
-    });
+img.src =
+    photos[
+        Math.floor(
+            Math.random() * photos.length
+        )
+    ];
+
+console.log(
+    'loading photo:',
+    img.src
+);
+
+   await new Promise((resolve,reject)=>{
+
+    img.onload = resolve;
+
+    img.onerror = ()=>{
+        reject(
+            new Error(
+                'image load failed: ' +
+                img.src
+            )
+        );
+    };
+
+});
 
     const canvas =
         document.createElement('canvas');
@@ -373,7 +404,12 @@ function animate() {
 }
 
 (async () => {
-    await loadPhotoTargets();
+    try{
+        await loadPhotoTargets();
+    }catch(e){
+        console.error(e);
+    }
+
     animate();
 })();
 
