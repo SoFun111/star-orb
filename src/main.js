@@ -49,7 +49,8 @@ const count = 15000;
 const positions =
     new Float32Array(count * 3);
 
-const targets = [];
+const sphereTargets = [];
+const photoTargets = [];
 
 for (let i = 0; i < count; i++) {
 
@@ -73,7 +74,7 @@ for (let i = 0; i < count; i++) {
     const z =
         r * Math.cos(phi);
 
-    targets.push(
+    sphereTargets.push(
         new THREE.Vector3(x, y, z)
     );
 
@@ -109,10 +110,100 @@ const stars =
 
 scene.add(stars);
 
+async function loadPhotoTargets() {
+
+    const img = new Image();
+
+    img.src = '/photo.jpg';
+
+    await new Promise(resolve => {
+        img.onload = resolve;
+    });
+
+    const canvas =
+        document.createElement('canvas');
+
+    const ctx =
+        canvas.getContext('2d');
+
+    const maxSize = 300;
+
+    canvas.width = maxSize;
+    canvas.height =
+        maxSize *
+        img.height /
+        img.width;
+
+    ctx.drawImage(
+        img,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    const imageData =
+        ctx.getImageData(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+    const data = imageData.data;
+
+    for (
+        let y = 0;
+        y < canvas.height;
+        y += 2
+    ) {
+
+        for (
+            let x = 0;
+            x < canvas.width;
+            x += 2
+        ) {
+
+            const index =
+                (y * canvas.width + x) * 4;
+
+            const alpha =
+                data[index + 3];
+
+            const brightness =
+                (
+                    data[index] +
+                    data[index + 1] +
+                    data[index + 2]
+                ) / 3;
+
+            if (
+                alpha > 10 &&
+                brightness > 30
+            ) {
+
+                photoTargets.push(
+                    new THREE.Vector3(
+                        (x - canvas.width / 2) * 0.25,
+                        (canvas.height / 2 - y) * 0.25,
+                        0
+                    )
+                );
+            }
+        }
+    }
+
+    console.log(
+        'photo points:',
+        photoTargets.length
+    );
+}
+
 let scatter = 0;
 let targetX = 0;
 let targetY = 0;
 let targetScale = 1;
+let morph = 0;
 
 function distance(a, b) {
     return Math.hypot(
@@ -281,7 +372,10 @@ function animate() {
     composer.render();
 }
 
-animate();
+(async () => {
+    await loadPhotoTargets();
+    animate();
+})();
 
 window.addEventListener(
     'resize',
