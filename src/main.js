@@ -112,7 +112,7 @@ scene.add(stars);
 
 async function loadPhotoTargets() {
 
-    onst img = new Image();
+   const img = new Image();
 
 const photos = [
     '/1.jpg',
@@ -306,6 +306,12 @@ function distance(a, b) {
                         0,
                         300
                     );
+                morph =
+                    THREE.MathUtils.clamp(
+                        openness * 2,
+                        0,
+                        1
+                    );
 
                 targetX =
                     (0.5 - lm[0].x) * 120;
@@ -345,32 +351,51 @@ function animate() {
 
     for (let i = 0; i < count; i++) {
 
-        const tx =
-            targets[i].x +
-            Math.sin(
-                time + i * 0.01
-            ) * scatter;
+const sphere =
+    sphereTargets[i];
 
-        const ty =
-            targets[i].y +
-            Math.cos(
-                time * 1.3 + i * 0.01
-            ) * scatter;
+const photo =
+    photoTargets.length
+        ? photoTargets[
+            i % photoTargets.length
+          ]
+        : sphere;
 
-        const tz =
-            targets[i].z +
-            Math.sin(
-                time * 0.7 + i * 0.01
-            ) * scatter;
+const targetXPos =
+    sphere.x * (1 - morph) +
+    photo.x * morph;
 
-        pos[i * 3] +=
-            (tx - pos[i * 3]) * 0.03;
+const targetYPos =
+    sphere.y * (1 - morph) +
+    photo.y * morph;
 
-        pos[i * 3 + 1] +=
-            (ty - pos[i * 3 + 1]) * 0.03;
+const targetZPos =
+    sphere.z * (1 - morph) +
+    photo.z * morph;
 
-        pos[i * 3 + 2] +=
-            (tz - pos[i * 3 + 2]) * 0.03;
+const tx =
+    targetXPos +
+    Math.sin(time + i * 0.01)
+    * scatter * 0.15;
+
+const ty =
+    targetYPos +
+    Math.cos(time * 1.2 + i * 0.01)
+    * scatter * 0.15;
+
+const tz =
+    targetZPos +
+    Math.sin(time * 0.8 + i * 0.01)
+    * scatter * 0.15;
+
+pos[i * 3] +=
+    (tx - pos[i * 3]) * 0.03;
+
+pos[i * 3 + 1] +=
+    (ty - pos[i * 3 + 1]) * 0.03;
+
+pos[i * 3 + 2] +=
+    (tz - pos[i * 3 + 2]) * 0.03;
     }
 
     geometry.attributes.position.needsUpdate = true;
