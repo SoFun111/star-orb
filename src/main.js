@@ -114,16 +114,18 @@ async function loadPhotoTargets() {
 
    const img = new Image();
 
-const photos = [
-    '/1.jpg',
-    '/2.jpg',
-    '/3.jpg',
-    '/4.png',
-    '/5.jpg',
-    '/6.jpg',
-    '/7.jpg'
-];
+const base = import.meta.env.BASE_URL;
 
+const photos = [
+  `${base}1.jpg`,
+  `${base}2.jpg`,
+  `${base}3.jpg`,
+  `${base}4.png`,
+  `${base}5.jpg`,
+  `${base}6.jpg`,
+  `${base}7.jpg`
+];
+    
 img.src =
     photos[
         Math.floor(
